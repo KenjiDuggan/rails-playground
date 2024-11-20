@@ -24,5 +24,12 @@
 
   <body>
     <%= yield %>
+    <%= link_to 'Home', root_path %>
+    <%= link_to 'Post', posts_path %>
+
+    <% if authenticated? %>
+      <p>Signed in as <%= Current.user.email_address %></p>
+      <%= link_to 'Sign out', session_path(Current.session), data: { turbo_method: :delete } %>
+    <% end %>
   </body>
 </html>
