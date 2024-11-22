@@ -1,0 +1,9 @@
+<div class="comment">
+  <p><strong><%= comment.user.email_address %>:</strong> <%= comment.body %></p>
+
+  <% if comment.replies.any? %>
+    <div class="replies">
+      <%= render partial: 'comment', collection: comment.replies %>
+    </div>
+  <% end %>
+</div>
