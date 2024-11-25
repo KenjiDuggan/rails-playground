@@ -6,7 +6,7 @@
   <div>
     <p><strong><%= comment.user.email_address %>:</strong> <%= comment.body %></p>
 
-    <% if comment.user == current_user %>
+    <% if comment.user == Current.user %>
       <%= form_with(model: comment, url: comment_path(comment), local: true) do |form| %>
         <div>
           <%= form.label :body %>
