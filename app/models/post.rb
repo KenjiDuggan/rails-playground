@@ -2,6 +2,7 @@ class Post < ApplicationRecord
   validates :title, uniqueness: { case_sensitive: false }, presence: true
   validates :user, presence: true
   before_validation :unique_title_on_update, on: :update
+  has_many :comments, class_name: "Comment", foreign_key: :post_id, dependent: :destroy
 
   belongs_to :user
 

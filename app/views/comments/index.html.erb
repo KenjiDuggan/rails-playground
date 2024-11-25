@@ -1,0 +1,21 @@
+<h1>Comments#index</h1>
+<p>Find me in app/views/comments/index.html.erb</p>
+<h1>All Comments</h1>
+
+<% @comments.each do |comment| %>
+  <div>
+    <p><strong><%= comment.user.email_address %>:</strong> <%= comment.body %></p>
+
+    <% if comment.user == Current.user %>
+      <%= form_with(model: comment, url: comment_path(comment), local: true) do |form| %>
+        <div>
+          <%= form.label :body %>
+          <%= form.text_area :body, value: comment.body %>
+        </div>
+        <div>
+          <%= form.submit "Update Comment" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
