@@ -8,6 +8,7 @@ class PostsController < ApplicationController
 
   # GET /posts/1 or /posts/1.json
   def show
+    @comments = @post.comments.top_level.includes(:user, :replies)
   end
 
   # GET /posts/new
@@ -23,7 +24,7 @@ class PostsController < ApplicationController
   def create
     @post = Post.new(post_params)
     if @post.save
-      redirect_to @post, notice: 'Post was successfully created.'
+      redirect_to @post, notice: "Post was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -33,7 +34,7 @@ class PostsController < ApplicationController
   def update
     @post = Post.find(params[:id])
     if @post.update(post_params)
-      redirect_to @post, notice: 'Post was successfully updated.'
+      redirect_to @post, notice: "Post was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
