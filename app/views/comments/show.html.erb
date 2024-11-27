@@ -1,0 +1,7 @@
+  <h2>Comment Details</h2>
+  <p><strong>Author:</strong> <%= @comment.user.email_address %></p>
+  <p><strong>Comment:</strong> <%= @comment.body %></p>
+  <p><strong>Post:</strong> <%= link_to @comment.post.title, @comment.post %></p>
+
+  <%= link_to 'Edit Comment', edit_comment_path(@comment) %> |
+  <%= link_to 'Back to Post', @comment.post %>

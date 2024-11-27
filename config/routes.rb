@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
   get "comments/index"
-  get "home/index"
-  get "home/posts"
   resource :session
   resources :passwords, param: :token
   resources :posts
@@ -13,8 +11,8 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  root to: 'home#index'
-  get '/posts', to: 'home#posts'
+  root to: "posts#index"
+  get "/posts", to: "home#posts"
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest

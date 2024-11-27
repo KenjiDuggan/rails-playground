@@ -18,7 +18,7 @@ module Authentication
     end
 
     def require_authentication
-      redirect_to new_session_path, alert: 'Sign in to continue' unless authenticated?
+      redirect_to new_session_path, alert: "Sign in to continue" unless authenticated?
     end
 
     def resume_session
@@ -53,6 +53,6 @@ module Authentication
 
     def sign_out
       sign_out_user
-      redirect_to root_path, notice: 'Signed out successfully'
+      redirect_to root_path, notice: "Signed out successfully"
     end
 end
