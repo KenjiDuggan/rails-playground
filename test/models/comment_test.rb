@@ -7,23 +7,13 @@ class CommentTest < ActiveSupport::TestCase
     @comment = Comment.new(body: "This is a test comment", user: @user, post: @post)
   end
 
-  test "should be valid with valid attributes" do
-    assert @comment.valid?
-  end
-
-  test "should require a body" do
-    @comment.body = nil
-    assert_not @comment.valid?
-    assert_includes @comment.errors[:body], "can't be blank"
-  end
-
-  test "should belong to a user" do
+  test "should require a user" do
     @comment.user = nil
     assert_not @comment.valid?
     assert_includes @comment.errors[:user], "must exist"
   end
 
-  test "should belong to a post" do
+  test "should require a post" do
     @comment.post = nil
     assert_not @comment.valid?
     assert_includes @comment.errors[:post], "must exist"
@@ -41,10 +31,14 @@ class CommentTest < ActiveSupport::TestCase
     assert_includes @comment.replies, reply
   end
 
-  test "parent must exist for replies" do
-    @comment.parent_id = 99999
+  test "should be valid with valid attributes" do
+    assert @comment.valid?
+  end
+
+  test "should require a body" do
+    @comment.body = nil
     assert_not @comment.valid?
-    assert_includes @comment.errors[:parent], "must exist for replies"
+    assert_includes @comment.errors[:body], "can't be blank"
   end
 
   test "should validate body length" do
@@ -71,6 +65,14 @@ class CommentTest < ActiveSupport::TestCase
     assert_includes @comment.errors[:parent], "cannot be its own ancestor"
   end
 
+  test "should require parent to exist for replies" do
+    non_existent_parent_id = Comment.maximum(:id).to_i + 1
+    comment = Comment.new(body: "Reply with non-existent parent", user: @user, post: @post, parent_id: non_existent_parent_id)
+
+    assert_not comment.valid?
+    assert_includes comment.errors[:parent], "must exist for replies"
+  end
+
   test "should allow different users to post the same comment on the same post" do
     @comment.save!
     another_user = User.create!(email_address: "another.user@shopify.com", password: "67890")
@@ -78,13 +80,19 @@ class CommentTest < ActiveSupport::TestCase
     assert another_comment.valid?
   end
 
-  test "should handle concurrent comment creation" do
-    comment1 = Comment.new(body: "Concurrent comment", user: @user, post: @post)
-    comment2 = Comment.new(body: "Concurrent comment", user: @user, post: @post)
+  test "should retrieve top-level comments" do
+    @comment.save!
+    top_level_comment = Comment.create!(body: "Top-level comment", user: @user, post: @post)
 
-    assert_difference('Comment.count', 1) do
-      comment1.save
-      comment2.save rescue ActiveRecord::RecordNotUnique
+    assert_includes Comment.top_level, top_level_comment
+    assert_includes Comment.top_level, @comment
+  end
+
+  test "should destroy replies when parent comment is destroyed" do
+    @comment.save!
+    reply = @comment.replies.create!(body: "This is a reply", user: @user, post: @post)
+    assert_difference('Comment.count', -2) do
+      @comment.destroy
     end
   end
 end

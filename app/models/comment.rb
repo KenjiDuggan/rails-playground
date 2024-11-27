@@ -30,13 +30,8 @@ class Comment < ApplicationRecord
   end
 
   def cannot_be_own_ancestor
-    current_comment = self
-    while current_comment.parent
-      if current_comment.parent == self
-        errors.add(:parent, "cannot be its own ancestor")
-        break
-      end
-      current_comment = current_comment.parent
+    if parent == self
+      errors.add(:parent, "cannot be its own ancestor")
     end
   end
 end
