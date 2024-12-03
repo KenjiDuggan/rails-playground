@@ -20,11 +20,16 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1
   def destroy
-    @comment.destroy
-
-    respond_to do |format|
-      format.html { redirect_to @comment.post, status: :see_other, notice: "Comment was successfully deleted." }
-      format.json { head :no_content }
+    if @comment.destroy
+      respond_to do |format|
+        format.html { redirect_to @comment.post, status: :see_other, notice: "Comment was successfully deleted." }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to @comment.post, alert: "Failed to delete the comment." }
+        format.json { render json: @comment.errors, status: :unprocessable_entity }
+      end
     end
   end
 

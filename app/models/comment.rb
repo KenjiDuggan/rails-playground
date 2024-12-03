@@ -14,8 +14,6 @@ class Comment < ApplicationRecord
       scope: [:user_id, :post_id],
       message: "has already been taken for this post by this user"
     }
-  validates :user, presence: true
-  validates :post, presence: true
   validate :parent_must_exist_for_replies
   validate :cannot_be_own_ancestor
 
